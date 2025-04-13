@@ -23,4 +23,5 @@ public class Order {
     Time timeCreatedAt;
     String status;
     Integer promotionId;
+    Integer voucherOfUserId;
 }

@@ -94,6 +94,44 @@ public class OrderServiceImpl implements OrderService  {
         
         return price;
     }
+    private OrderDto populateOrderDto(Order order, String includeStr) {
+        OrderDto orderDto = new OrderDto();
+        orderDto.setOrder(order);
+    
+        if (includeStr != null) {
+            if (includeStr.contains("user")) {
+                SharedUserDto user = publicAccountService.GetUserByUsername(order.getCreatedBy());
+                orderDto.setUserInfos(user);
+            }
+            if (includeStr.contains("event")) {
+                SharedEventDto event = publicEventService.GetEventById(order.getEventId());
+                orderDto.setEvent(event);
+            }
+            if (includeStr.contains("ticketOfOrders") && includeStr.contains("ticket")) {
+                List<TicketOfOrder> ticketOfOrders = ticketOfOrderDao.GetTicketsOfOrder(order.getId());
+                List<SharedTicketDto> ticketInfos = new ArrayList<>();
+                for (TicketOfOrder ticketOfOrder : ticketOfOrders) {
+                    SharedTicketDto ticketInfo = publicEventService.GetTicketById(ticketOfOrder.getTicketId());
+                    ticketInfos.add(ticketInfo);
+                }
+                orderDto.setTicketOfOrders(ticketOfOrders);
+                orderDto.setTicketInfos(ticketInfos);
+            } else if (includeStr.contains("ticketOfOrders")) {
+                List<TicketOfOrder> ticketOfOrders = ticketOfOrderDao.GetTicketsOfOrder(order.getId());
+                orderDto.setTicketOfOrders(ticketOfOrders);
+                orderDto.setTicketInfos(null);
+            }
+            if (includeStr.contains("promotion")) {
+                SharedPromotionDto promotion = publicPromotionService.GetPromotionById(order.getPromotionId());
+                if (promotion != null) {
+                    int reduction = order.getPrice() / (100 - promotion.getPromoPercent()) * 100 - order.getPrice();
+                    promotion.setReduction(reduction);
+                }
+                orderDto.setPromotionInfo(promotion);
+            }
+        }
+        return orderDto;
+    }
     @Override
     @Transactional
     public CreateOrderResponse CreateOrder(CreateOrderRequest createOrderRequest) {
@@ -143,44 +181,6 @@ public class OrderServiceImpl implements OrderService  {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return CreateOrderResponse.builder().message(e.getMessage()).build();
        }
-    }
-    private OrderDto populateOrderDto(Order order, String includeStr) {
-        OrderDto orderDto = new OrderDto();
-        orderDto.setOrder(order);
-    
-        if (includeStr != null) {
-            if (includeStr.contains("user")) {
-                SharedUserDto user = publicAccountService.GetUserByUsername(order.getCreatedBy());
-                orderDto.setUserInfos(user);
-            }
-            if (includeStr.contains("event")) {
-                SharedEventDto event = publicEventService.GetEventById(order.getEventId());
-                orderDto.setEvent(event);
-            }
-            if (includeStr.contains("ticketOfOrders") && includeStr.contains("ticket")) {
-                List<TicketOfOrder> ticketOfOrders = ticketOfOrderDao.GetTicketsOfOrder(order.getId());
-                List<SharedTicketDto> ticketInfos = new ArrayList<>();
-                for (TicketOfOrder ticketOfOrder : ticketOfOrders) {
-                    SharedTicketDto ticketInfo = publicEventService.GetTicketById(ticketOfOrder.getTicketId());
-                    ticketInfos.add(ticketInfo);
-                }
-                orderDto.setTicketOfOrders(ticketOfOrders);
-                orderDto.setTicketInfos(ticketInfos);
-            } else if (includeStr.contains("ticketOfOrders")) {
-                List<TicketOfOrder> ticketOfOrders = ticketOfOrderDao.GetTicketsOfOrder(order.getId());
-                orderDto.setTicketOfOrders(ticketOfOrders);
-                orderDto.setTicketInfos(null);
-            }
-            if (includeStr.contains("promotion")) {
-                SharedPromotionDto promotion = publicPromotionService.GetPromotionById(order.getPromotionId());
-                if (promotion != null) {
-                    int reduction = order.getPrice() / (100 - promotion.getPromoPercent()) * 100 - order.getPrice();
-                    promotion.setReduction(reduction);
-                }
-                orderDto.setPromotionInfo(promotion);
-            }
-        }
-        return orderDto;
     }
     @Override
     public OrderDto GetOrderById(int id, String includeStr) {
@@ -236,14 +236,14 @@ public class OrderServiceImpl implements OrderService  {
     }
     @Override
     @Transactional
-    public String ReserveOrder(int id, int voucherOfUserId) {
+    public String ReserveOrder(Integer id, Integer voucherOfUserId) {
         try{
             Order order = orderQueryDao.GetOrderById(id);
 
             if(order == null){
                 throw new Exception("Order is not valid");
             }
-
+            
             int correspondingPromotinoId = order.getPromotionId();
             if(correspondingPromotinoId > 0)
             {
@@ -320,6 +320,11 @@ public class OrderServiceImpl implements OrderService  {
         }
     }
     @Override
+    public String ConfirmOrder(Integer orderId, Integer voucherOfUserId, Integer appliedVoucherPrice) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'ConfirmOrder'");
+    }
+    @Override
     public int UpdateOrder(int id, Order order) {
         try{
             Map<String, Object> orderValues = new HashMap<>();
@@ -353,6 +358,16 @@ public class OrderServiceImpl implements OrderService  {
             log.error("Error in UpdateOrder of OrderService", e);
             return -1;
         }
+    }
+    @Override
+    public String PayOrder(Integer orderId, Integer voucherOfUserId, String bankAccountId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'PayOrder'");
+    }
+    @Override
+    public String CancelOrder(Integer orderId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'CancelOrder'");
     }
     
 

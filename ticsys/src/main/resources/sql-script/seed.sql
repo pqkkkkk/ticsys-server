@@ -44,7 +44,7 @@ alter table ticket add maxQtyInOrder int;
 
 
 alter table [order] drop column quantity;
-
+alter table [order] add voucherOfUserId int default 0;
 
 alter table comment add dateCreatedAt date default '2025-02-18';
 alter table comment add timeCreatedAt time default '16:00:00';
@@ -165,3 +165,4 @@ WITH month_series AS (
 SELECT o.*, SUM(too.quantity) as ticketCount
 FROM [order] o JOIN TicketOfOrder too ON o.ID = too.orderId
 GROUP BY o.ID, o.createdBy, o.DateCreatedAt, o.eventId, o.price, o.promotionId, o.status, o.TimeCreatedAt
+

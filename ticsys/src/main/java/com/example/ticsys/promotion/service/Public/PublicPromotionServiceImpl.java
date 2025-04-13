@@ -49,6 +49,10 @@ public class PublicPromotionServiceImpl implements PublicPromotionService {
     @Override
     public boolean IsValidPromotion(int promotionId) {
         try{
+            if (promotionId <= 0) {
+                return true;
+                
+            }
             SharedPromotionDto promotion = GetPromotionById(promotionId);
 
             if(promotion == null){

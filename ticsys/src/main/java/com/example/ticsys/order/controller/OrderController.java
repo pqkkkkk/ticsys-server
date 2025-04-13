@@ -32,15 +32,31 @@ public class OrderController {
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/reserve")
     @Secured({"ROLE_ORGANIZER", "ROLE_ADMIN", "ROLE_USER"})
-    public ResponseEntity<String> ReserveOrder(@PathVariable int id,
+    public ResponseEntity<String> ReserveOrder(@PathVariable Integer id,
                                                 @RequestParam(required = false) Integer voucherOfUserId){
         if(voucherOfUserId == null){
             voucherOfUserId = -1;
         }
         String result = orderService.ReserveOrder(id, voucherOfUserId);
         if (result.equals("success")) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+    @PutMapping("/{id}/payment")
+    @Secured({"ROLE_ORGANIZER", "ROLE_ADMIN", "ROLE_USER"})
+    public ResponseEntity<String> PayOrder(@PathVariable Integer id,
+                                            @RequestParam(required = true) String bankAccountId,
+                                            @RequestParam(required = false) Integer voucherOfUserId){
+        if(voucherOfUserId == null){
+            voucherOfUserId = -1;
+        }
+
+        String result = orderService.PayOrder(id, voucherOfUserId, bankAccountId);
+        if (result.equals("processing")) {
             return ResponseEntity.ok(result);
         } else {
             return ResponseEntity.badRequest().body(result);

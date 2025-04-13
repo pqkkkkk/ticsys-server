@@ -23,6 +23,7 @@ public class OrderRowMapper implements RowMapper<Order> {
         order.setTimeCreatedAt(rs.getTime("timeCreatedAt"));
         order.setStatus(rs.getString("status"));
         order.setPromotionId(rs.getInt("promotionId"));
+        order.setVoucherOfUserId(rs.getInt("voucherOfUserId"));
         return order;
     }
 }
