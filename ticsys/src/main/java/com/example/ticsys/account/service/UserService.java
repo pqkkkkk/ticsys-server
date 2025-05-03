@@ -10,9 +10,11 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.ticsys.account.dao.IUserDao;
+import com.example.ticsys.account.dto.request.LinkBankAccountRequest;
 import com.example.ticsys.account.model.OrganizerInfo;
 import com.example.ticsys.account.model.User;
 import com.example.ticsys.media.CloudinaryService;
+import com.example.ticsys.outbound.eventPublisher.IEventPublisher;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,18 +24,20 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final IUserDao userDao;
     private final CloudinaryService cloudinaryService;
+    private final IEventPublisher eventPublisher;
     
     @Autowired
-    public UserService(IUserDao userDao, PasswordEncoder passwordEncoder, CloudinaryService cloudinaryService) {
+    public UserService(IUserDao userDao, PasswordEncoder passwordEncoder,
+            IEventPublisher eventPublisher, CloudinaryService cloudinaryService) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
         this.cloudinaryService = cloudinaryService;
+        this.eventPublisher = eventPublisher;
     }
     public List<User> GetAllUsers(String role) {
         return userDao.GetAllUsers(role);
     }
     public User GetUserByUsername(String username) {
-        log.info("GetUserByUsername of UserService");
         try{
             return userDao.GetUserByUsername(username);
         }
@@ -83,6 +87,25 @@ public class UserService {
             log.error("RegisterForOrganizer, error: ", e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false;
+        }
+    }
+    public String LinkToBankAccount(LinkBankAccountRequest request){
+        try{
+            Boolean isValidUser = userDao.IsValidUser(request.getUsername());
+
+            if(!isValidUser){
+                throw new Exception("Invalid user");
+            }
+
+            eventPublisher.SendLinkBankAccountRequest(request.getUsername(),
+                                    request.getBankAccountId(), request.getBankAccountOwnerName());
+
+            return "processing";
+
+        }
+        catch(Exception e){
+            log.error("Error in LinkToBankAccount of UserService: " + e.getMessage());
+            return "error";
         }
     }
 }

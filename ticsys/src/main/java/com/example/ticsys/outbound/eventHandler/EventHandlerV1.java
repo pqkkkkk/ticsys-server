@@ -5,7 +5,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import com.example.ticsys.order.service.OrderService;
-import com.example.ticsys.outbound.event.OrderPaymentResponseEvent;
+import com.example.ticsys.outbound.event.LinkBankAccountResult;
+import com.example.ticsys.outbound.event.OrderPaymentResponse;
 import com.example.ticsys.outbound.event.PaymentResult;
 
 import lombok.extern.slf4j.Slf4j;
@@ -13,16 +14,16 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class OrderEventHandlerV1 implements IOrderEventHandler {
+public class EventHandlerV1 implements IEventHandler {
     private final OrderService orderService;
 
     @Autowired
-    public OrderEventHandlerV1(OrderService orderService) {
+    public EventHandlerV1(OrderService orderService) {
         this.orderService = orderService;
     }
     @Override
     @KafkaListener(topics = "ticsys-order-payment-result", groupId = "ticsys")
-    public void HandleOrderPaymentResponseEvent(OrderPaymentResponseEvent event) {
+    public void HandleOrderPaymentResponseEvent(OrderPaymentResponse event) {
         try{
             PaymentResult transactionResult = event.getTransactionResult();
 
@@ -37,6 +38,17 @@ public class OrderEventHandlerV1 implements IOrderEventHandler {
         }
         catch (Exception e) {
             log.error("Failed to handle OrderPaymentResponseEvent: " + e.getMessage());
+            throw e;
+        }
+    }
+    @Override
+    @KafkaListener(topics = "ticsys-link-bank-account-result", groupId = "ticsys")
+    public void HandleLinkBankAccountResponse(LinkBankAccountResult event) {
+        try{
+            log.info("Received LinkBankAccountResult: " + event);
+        }
+        catch (Exception e) {
+            log.error("Failed to handle LinkBankAccountResponse: " + e.getMessage());
             throw e;
         }
     }

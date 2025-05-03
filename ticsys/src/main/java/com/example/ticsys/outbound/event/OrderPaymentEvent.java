@@ -11,10 +11,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class OrderPaymentResponseEvent {
+public class OrderPaymentEvent {
     Integer orderId;
     Double orderPrice;
     Integer voucherOfUserId;
-    PaymentResult transactionResult;
-    String message;
+    String accountId;
 }

@@ -123,5 +123,15 @@ public class UserSqlDao implements IUserDao {
         paramMap.put("avatarPath", avatarPath);
         return namedParameterJdbcTemplate.update(sql, paramMap) == 1;
     }
+    @Override
+    public Boolean IsValidUser(String username) {
+        String sql = """
+            SELECT COUNT(*) FROM users WHERE username = :username
+        """;
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("username", username);
+        Integer count = namedParameterJdbcTemplate.queryForObject(sql, paramMap, Integer.class);
+        return count != null && count > 0;
+    }
 
 }

@@ -8,12 +8,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.ticsys.account.dto.request.LinkBankAccountRequest;
 import com.example.ticsys.account.model.OrganizerInfo;
 import com.example.ticsys.account.model.User;
 import com.example.ticsys.account.service.UserService;
@@ -39,6 +41,20 @@ public class UserController {
             return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok(user);
+        }
+    }
+    @PutMapping("/{username}/banking")
+    @PreAuthorize("@accountSecurityServiceImpl.IsAccountOwner(#username)")
+    public ResponseEntity<String> LinkToBankAccount(@RequestBody LinkBankAccountRequest request, @PathVariable String username) {
+        request.setUsername(username);
+        request.setBankAccountId(request.getBankAccountId().replaceAll(" ", ""));
+        request.setBankAccountOwnerName(request.getBankAccountOwnerName().replaceAll(" ", ""));
+        String result = userService.LinkToBankAccount(request);
+
+        if(result.equals("processing")){
+            return ResponseEntity.ok("processing");
+        } else{
+            return ResponseEntity.badRequest().body("error");
         }
     }
     @GetMapping

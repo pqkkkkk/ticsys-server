@@ -12,4 +12,5 @@ public interface IUserDao {
     public boolean addRolesToUser(String username, List<String> roles);
     public boolean AddOrganizerInfo(OrganizerInfo organizerInfo);
     public boolean UpdateAvatarOfUser(String username, String avatarPath);
+    public Boolean IsValidUser(String username);
 }

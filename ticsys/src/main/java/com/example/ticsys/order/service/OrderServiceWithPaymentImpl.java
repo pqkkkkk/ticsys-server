@@ -23,7 +23,7 @@ import com.example.ticsys.order.dto.response.CreateOrderResponse;
 import com.example.ticsys.order.dto.response.GetOrdersResponse;
 import com.example.ticsys.order.model.Order;
 import com.example.ticsys.order.model.TicketOfOrder;
-import com.example.ticsys.outbound.eventPublisher.IOrderEventPublisher;
+import com.example.ticsys.outbound.eventPublisher.IEventPublisher;
 import com.example.ticsys.promotion.service.Public.PublicPromotionService;
 import com.example.ticsys.sharedDto.SharedPromotionDto;
 import com.example.ticsys.sharedDto.SharedTicketDto;
@@ -41,14 +41,14 @@ public class OrderServiceWithPaymentImpl implements OrderService {
     private final PublicEventService publicEventService;
     private final PublicAccountService publicAccountService;
     private final PublicPromotionService publicPromotionService;
-    private final IOrderEventPublisher orderEventPublisher;
+    private final IEventPublisher orderEventPublisher;
 
     @Autowired
     public OrderServiceWithPaymentImpl(ITicketOfOrderDao ticketOfOrderDao,
                             IOrderCommandDao orderCommandDao, IOrderQueryDao orderQueryDao,
                              PublicEventService publicEventService, PublicAccountService publicAccountService,
                              PublicPromotionService publicPromotionService,
-                             IOrderEventPublisher orderEventPublisher) {
+                             IEventPublisher orderEventPublisher) {
         this.orderEventPublisher = orderEventPublisher;
         this.ticketOfOrderDao = ticketOfOrderDao;
         this.publicEventService = publicEventService;
