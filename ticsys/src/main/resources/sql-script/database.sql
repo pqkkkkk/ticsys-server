@@ -123,6 +123,12 @@ CREATE TABLE Comment (
     dateCreatedAt DATE default '2025-02-25',
     timeCreatedAt TIME default '16:00:00'
 );
+CREATE TABLE PaymentMethod(
+	ID INT PRIMARY KEY IDENTITY(1,1),
+	userId nvarchar(50),
+	bankAccountNumber nvarchar(15),
+	bankName nvarchar(20)
+);
 
 alter TABLE RoleOfUser add FOREIGN KEY (userId) REFERENCES Users(userName);
 alter TABLE RoleOfUser add FOREIGN KEY (roleName) REFERENCES Role(name);
@@ -144,3 +150,4 @@ alter TABLE Comment add FOREIGN KEY (eventId) REFERENCES Event(ID);
 alter TABLE Comment add FOREIGN KEY (parentId) REFERENCES Comment(ID);
 alter TABLE VoucherOfUser add FOREIGN KEY (userId) REFERENCES Users(userName);
 alter TABLE VoucherOfUser add FOREIGN KEY (promotionId) REFERENCES Promotion(id);
+alter TABLE PaymentMethod add FOREIGN KEY (userId) REFERENCES Users(userName);

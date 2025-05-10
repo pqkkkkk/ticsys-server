@@ -2,6 +2,7 @@ package com.example.ticsys.order.service;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +26,10 @@ import com.example.ticsys.order.model.Order;
 import com.example.ticsys.order.model.TicketOfOrder;
 import com.example.ticsys.outbound.eventPublisher.IEventPublisher;
 import com.example.ticsys.promotion.service.Public.PublicPromotionService;
+import com.example.ticsys.sharedDto.SharedEventDto;
 import com.example.ticsys.sharedDto.SharedPromotionDto;
 import com.example.ticsys.sharedDto.SharedTicketDto;
+import com.example.ticsys.sharedDto.SharedUserDto;
 import com.example.ticsys.sharedDto.SharedVoucherOfUserDto;
 
 import lombok.extern.slf4j.Slf4j;
@@ -330,11 +333,59 @@ public class OrderServiceWithPaymentImpl implements OrderService {
             return CreateOrderResponse.builder().message(e.getMessage()).build();
        }
     }
-
+    private OrderDto populateOrderDto(Order order, String includeStr) {
+        OrderDto orderDto = new OrderDto();
+        orderDto.setOrder(order);
+    
+        if (includeStr != null) {
+            if (includeStr.contains("user")) {
+                SharedUserDto user = publicAccountService.GetUserByUsername(order.getCreatedBy());
+                orderDto.setUserInfos(user);
+            }
+            if (includeStr.contains("event")) {
+                SharedEventDto event = publicEventService.GetEventById(order.getEventId());
+                orderDto.setEvent(event);
+            }
+            if (includeStr.contains("ticketOfOrders") && includeStr.contains("ticket")) {
+                List<TicketOfOrder> ticketOfOrders = ticketOfOrderDao.GetTicketsOfOrder(order.getId());
+                List<SharedTicketDto> ticketInfos = new ArrayList<>();
+                for (TicketOfOrder ticketOfOrder : ticketOfOrders) {
+                    SharedTicketDto ticketInfo = publicEventService.GetTicketById(ticketOfOrder.getTicketId());
+                    ticketInfos.add(ticketInfo);
+                }
+                orderDto.setTicketOfOrders(ticketOfOrders);
+                orderDto.setTicketInfos(ticketInfos);
+            } else if (includeStr.contains("ticketOfOrders")) {
+                List<TicketOfOrder> ticketOfOrders = ticketOfOrderDao.GetTicketsOfOrder(order.getId());
+                orderDto.setTicketOfOrders(ticketOfOrders);
+                orderDto.setTicketInfos(null);
+            }
+            if (includeStr.contains("promotion")) {
+                SharedPromotionDto promotion = publicPromotionService.GetPromotionById(order.getPromotionId());
+                if (promotion != null) {
+                    int reduction = order.getPrice() / (100 - promotion.getPromoPercent()) * 100 - order.getPrice();
+                    promotion.setReduction(reduction);
+                }
+                orderDto.setPromotionInfo(promotion);
+            }
+        }
+        return orderDto;
+    }
     @Override
     public OrderDto GetOrderById(int id, String includeStr) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'GetOrderById'");
+        try{
+            OrderDto orderDto = new OrderDto();
+            Order order = orderQueryDao.GetOrderById(id);
+            orderDto.setOrder(order);
+
+            return populateOrderDto(order, includeStr);
+           
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     @Override

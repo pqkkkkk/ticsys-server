@@ -19,6 +19,8 @@ insert into RoleOfUser(roleName,userId) values ('ADMIN','admin')
 insert into RoleOfUser(roleName,userId) values ('USER','admin')
 insert into RoleOfUser(roleName,userId) values ('ORGANIZER','admin')
 
+insert into PaymentMethod(userId, bankAccountNumber, bankName) VALUES('pqkiet854','012345678912345','tsbank');
+
 select * from Category;
 select * from users;
 select * from role;

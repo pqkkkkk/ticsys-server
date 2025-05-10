@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.ticsys.account.dao.IPaymentMethodDao;
 import com.example.ticsys.account.dao.IUserDao;
 import com.example.ticsys.account.dto.request.LinkBankAccountRequest;
 import com.example.ticsys.account.model.OrganizerInfo;
+import com.example.ticsys.account.model.PaymentMethod;
 import com.example.ticsys.account.model.User;
 import com.example.ticsys.media.CloudinaryService;
 import com.example.ticsys.outbound.eventPublisher.IEventPublisher;
@@ -25,14 +27,16 @@ public class UserService {
     private final IUserDao userDao;
     private final CloudinaryService cloudinaryService;
     private final IEventPublisher eventPublisher;
-    
+    private final IPaymentMethodDao paymentMethodDao;
     @Autowired
     public UserService(IUserDao userDao, PasswordEncoder passwordEncoder,
-            IEventPublisher eventPublisher, CloudinaryService cloudinaryService) {
+                        IPaymentMethodDao paymentMethodDao,
+                        IEventPublisher eventPublisher, CloudinaryService cloudinaryService) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
         this.cloudinaryService = cloudinaryService;
         this.eventPublisher = eventPublisher;
+        this.paymentMethodDao = paymentMethodDao;
     }
     public List<User> GetAllUsers(String role) {
         return userDao.GetAllUsers(role);
@@ -106,6 +110,15 @@ public class UserService {
         catch(Exception e){
             log.error("Error in LinkToBankAccount of UserService: " + e.getMessage());
             return "error";
+        }
+    }
+    public List<PaymentMethod> GetPaymentMethodsOfUser(String userId, String bankName) {
+        try{
+            return paymentMethodDao.GetPaymentMethodsOfUser(userId, bankName);
+        }
+        catch(Exception e){
+            log.error("Error in GetPaymentMethodsOfUser of UserService: " + e.getMessage());
+            return null;
         }
     }
 }

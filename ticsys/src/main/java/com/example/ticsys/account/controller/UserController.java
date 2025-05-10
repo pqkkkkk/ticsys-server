@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.ticsys.account.dto.request.LinkBankAccountRequest;
 import com.example.ticsys.account.model.OrganizerInfo;
+import com.example.ticsys.account.model.PaymentMethod;
 import com.example.ticsys.account.model.User;
 import com.example.ticsys.account.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,6 +56,17 @@ public class UserController {
             return ResponseEntity.ok("processing");
         } else{
             return ResponseEntity.badRequest().body("error");
+        }
+    }
+    @GetMapping("/{username}/banking")
+    @PreAuthorize("@accountSecurityServiceImpl.IsAccountOwner(#username)")
+    public ResponseEntity<List<PaymentMethod>> GetPaymentMethodsOfUser(@PathVariable String username,
+     @RequestParam(required = false) String bankName) {
+        List<PaymentMethod> paymentMethods = userService.GetPaymentMethodsOfUser(username, bankName);
+        if(paymentMethods == null || paymentMethods.isEmpty()){
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(paymentMethods);
         }
     }
     @GetMapping
