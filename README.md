@@ -34,6 +34,7 @@ ticsys-server/
     - Manage ticket list
     - Ask question about event
     - Online payment
+    - Link account to TSBank account
 - Organizer
     - Create event
     - Manage own event
