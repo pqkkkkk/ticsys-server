@@ -1,6 +1,6 @@
-# TicSys -server - server-side implementation for TicSys. Using modular monoliths approach
+# TicSys-server - server-side implementation for TicSys. Using modular monoliths approach
 ## Introduction
-Side project implemented business logic of the event ticketing system
+Side project implemented business logic of the event ticketing system. Check [TicSys-client]{https://github.com/pqkkkkk/TicSys-client}
 ## Project structure
 ```
 ticsys-server/
@@ -41,3 +41,7 @@ ticsys-server/
     - Manage promotions of event
     - View event report (statistics about revenue, sold ticket quantity, customer quantity)
     - Reply question about event of the customer
+- Admin
+    - Manage users
+    - Manage orders
+    - View event report (statistics about revenue, sold ticket quantity, customer quantity) of entire system
