@@ -27,6 +27,7 @@ ticsys-server/
 - Cloudinary: cloud storage service
 - SQL Server: database for this project
 - Kafka: use to communicate with TSBank to process the order payment.
+- OpenAPI: document RESTful API
 
 ## Features
 - Customer
@@ -39,9 +40,9 @@ ticsys-server/
     - Create event
     - Manage own event
     - Manage promotions of event
-    - View event report (statistics about revenue, sold ticket quantity, customer quantity)
+    - View event reports (revenue, sold tickets, customer count)
     - Reply question about event of the customer
 - Admin
     - Manage users
     - Manage orders
-    - View event report (statistics about revenue, sold ticket quantity, customer quantity) of entire system
+    - View system-wide event reports
