@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -41,7 +40,7 @@ public class OrderServiceImpl implements OrderService  {
     private final PublicEventService publicEventService;
     private final PublicAccountService publicAccountService;
     private final PublicPromotionService publicPromotionService;
-    @Autowired
+
     public OrderServiceImpl(ITicketOfOrderDao ticketOfOrderDao,
                             IOrderCommandDao orderCommandDao, IOrderQueryDao orderQueryDao,
                              PublicEventService publicEventService, PublicAccountService publicAccountService,

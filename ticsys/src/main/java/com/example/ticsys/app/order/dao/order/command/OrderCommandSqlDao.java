@@ -3,7 +3,6 @@ package com.example.ticsys.app.order.dao.order.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -17,7 +16,6 @@ import com.example.ticsys.app.order.model.Order;
 public class OrderCommandSqlDao implements IOrderCommandDao {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    @Autowired
     public OrderCommandSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

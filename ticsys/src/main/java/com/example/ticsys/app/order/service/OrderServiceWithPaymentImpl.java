@@ -391,14 +391,39 @@ public class OrderServiceWithPaymentImpl implements OrderService {
     @Override
     public GetOrdersResponse GetOrders(String includeStr, String userId, int eventId, LocalDate dateCreatedAt,
             Time timeCreatedAt, String status) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'GetOrders'");
+        try{
+
+            List<OrderDto> orderDtos = new ArrayList<>();
+            List<Order> orders = orderQueryDao.GetOrders(userId, dateCreatedAt, timeCreatedAt, status, eventId);
+
+            for(Order order : orders){
+                OrderDto orderDto = populateOrderDto(order, includeStr);
+                orderDtos.add(orderDto);
+            }
+            return GetOrdersResponse.builder().message("success").orderDtos(orderDtos).build();
+        }
+        catch (Exception e) {
+            return GetOrdersResponse.builder().orderDtos(null).message(e.getMessage()).build();
+        }
     }
 
     @Override
     public GetOrdersResponse GetOrdersBySearch(String userFullnameKeyword, int eventId, String includeStr) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'GetOrdersBySearch'");
+        try{
+
+            List<OrderDto> orderDtos = new ArrayList<>();
+            List<Order> orders = orderQueryDao.SearchOrders(userFullnameKeyword, eventId);
+
+            for(Order order : orders){
+                OrderDto orderDto = populateOrderDto(order, includeStr);
+                orderDtos.add(orderDto);
+            }
+            return GetOrdersResponse.builder().message("success").orderDtos(orderDtos).build();
+        }
+        catch (Exception e)
+        {
+            return GetOrdersResponse.builder().orderDtos(null).message(e.getMessage()).build();
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
-/.vscode
-/.idea
+.vscode
+.idea
 target/
+ticsys/src/main/resources/.env
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
