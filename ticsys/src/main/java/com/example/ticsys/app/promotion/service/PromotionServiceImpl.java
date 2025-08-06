@@ -2,7 +2,6 @@ package com.example.ticsys.app.promotion.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.ticsys.app.promotion.dao.promotion.command.IPromotionCommandDao;
@@ -22,7 +21,6 @@ public class PromotionServiceImpl implements PromotionService {
     private final IPromotionQueryDao promotionQueryDao;
     private final IVoucherOfUserDao voucherOfUserDao;
 
-    @Autowired
     public PromotionServiceImpl(IVoucherOfUserDao voucherOfUserDao, IPromotionCommandDao promotionCommandDao, IPromotionQueryDao promotionQueryDao) {
         this.promotionCommandDao = promotionCommandDao;
         this.promotionQueryDao = promotionQueryDao;
